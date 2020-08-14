@@ -47,11 +47,20 @@ def bin_array(x, n, axis=0):
     array = np.swapaxes(array, 0, axis)
     return array
 
-
 def cube_resampling(cube, new_cube):
     """
     Interpolate a 3D master datacube to new spatial/spectral coordinates
     at once.
+    
+    Notes
+    -----
+    * If the new dimensions are integer multiples of the original
+      dimensions, it is recommended to use the bin_array function
+      defined in this module.
+    * The flux stored in the channels of the cube is per unit of 
+      velocity, for this reason if the result of the total flux
+      is to be compared, the cube must be multiplied by the width
+      of the channels.
     
     Parameters
     ----------
@@ -72,9 +81,10 @@ def cube_resampling(cube, new_cube):
     #   coordinates
     # > Determines the spatial coordinates of the new system with respect to 
     #   the original
-    # > Interpolates into the new data_cube    
+    # > Interpolates into the new data_cube     
     pixratio = cube.pixsize.value / new_cube.pixsize.value
-    channelratio = cube.velocity_sampl.value/new_cube.velocity_sampl.value
+    channelratio = cube.velocity_sampl.value / new_cube.velocity_sampl.value
+    channelratio_dim = cube.spectral_dim / new_cube.spectral_dim
     origin_spatial = (cube.spatial_dim - new_cube.spatial_dim/pixratio   
               - 1. + 1/pixratio) / 2
     new_positions = origin_spatial + np.arange(new_cube.spatial_dim)/pixratio
@@ -82,5 +92,8 @@ def cube_resampling(cube, new_cube):
                - 1. + 1/channelratio) / 2
     new_channels = origin_spectral + np.arange(new_cube.spectral_dim)/channelratio
     X, Y, Z = np.meshgrid(new_positions, new_positions, new_channels)
+    
     new_cube.cube = ndimage.map_coordinates(cube.cube, [Z, X, Y], order=1).T
-    new_cube.cube = new_cube.cube / (pixratio**2 * channelratio)
+    new_cube.cube = (new_cube.cube) / (pixratio**2)
+
+    

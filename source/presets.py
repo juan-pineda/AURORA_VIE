@@ -1,3 +1,26 @@
+"""
+=======
+presets
+=======
+
+Aurora module that contains the preset values for key words essential for
+the correct operation of the code, as well as the preset values for the
+simulation of synthetic observations that mimic the real instruments.
+
+Notes
+-----
+The preset instruments are:
+
+> sinfoni
+> sinfoni-ao
+> eagle
+> kmos
+> muse-wide
+> muse-narrow
+> ghasp
+> fake1
+"""
+
 import numpy as np
 from astropy import units as unit
 
@@ -22,12 +45,15 @@ default_values["run"] = {
     "instrument": ["custom_"+str(np.random.randint(low=1, high=100))],
     "nfft": [9],
     "fft_hsml_min": [8E-3, unit.pc],
+    "fft_scales": ["Not"],
     "nvector": [4096],
     "simulation_id": [""],
     "snapshot_id": [""],
     "reference_id": [""],
     "overwrite": [False],
-    "ncpu": [1]
+    "ncpu": [1],
+    "spectral_convolution": ["analytical"],
+    "spatial_convolution": ["spatial_astropy"]
 }
 
 default_values["spectrom"] = {
@@ -37,28 +63,37 @@ default_values["spectrom"] = {
     "redshift_ref": [0.],
     "kernel_scale": [1.],
     "lum_dens_relation": ["square"],
-    "density_cut": ["Not"]
-
+    "density_threshold": ["Not"],
+    "equivalent_luminosity": ["min"]
 }
-
 
 Instruments = {}
 
+# Preset values stablished based on the 
+# official operation manual of the instrument:
+# (https://www.eso.org/sci/facilities/paranal
+# /decommissioned/sinfoni/doc/VLT-MAN-ESO-
+# 14700-3517_v87.pdf)
 Instruments["sinfoni"] = {
     "spatial_sampl": "0.125",
     "spectral_sampl": "1.95",
     "spatial_res": "0.65",
-    "spectral_res": "2500",
+    "spectral_res": " 3000",
     "spatial_dim": "38",
     "spectral_dim": "48",
     "target_snr": "0"
 }
 
+# Preset values stablished based on the 
+# official operation manual of the instrument:
+# (https://www.eso.org/sci/facilities/paranal
+# /decommissioned/sinfoni/doc/VLT-MAN-ESO-
+# 14700-3517_v87.pdf)
 Instruments["sinfoni-ao"] = {
     "spatial_sampl": "0.05",
     "spectral_sampl": "1.95",
     "spatial_res": "0.20",
-    "spectral_res": "2500",
+    "spectral_res": "3000",
     "spatial_dim": "64",
     "spectral_dim": "48",
     "target_snr": "0"
@@ -74,31 +109,44 @@ Instruments["eagle"] = {
     "target_snr": "0"
 }
 
+# Preset values stablished based on the 
+# official operation manual of the instrument:
+# (https://www.eso.org/sci/facilities/paranal
+# /instruments/kmos/doc/VLT-MAN-KMO-146603-
+# 001_P100.pdf)
 Instruments["kmos"] = {
     "spatial_sampl": "0.20",
     "spectral_sampl": "5.375",
     "spatial_res": "0.70",
-    "spectral_res": "1800",
+    "spectral_res": "4000",
     "spatial_dim": "14",
     "spectral_dim": "64",
     "target_snr": "0"
 }
 
+# Preset values stablished based on the 
+# official operation manual of the instrument:
+# (https://www.eso.org/sci/facilities/develop
+# /instruments/muse.html)
 Instruments["muse-wide"] = {
     "spatial_sampl": "0.20",
     "spectral_sampl": "1.95",
     "spatial_res": "0.65",
-    "spectral_res": "300",
+    "spectral_res": "2000",
     "spatial_dim": "44",
     "spectral_dim": "64",
     "target_snr": "0"
 }
 
+# Preset values stablished based on the 
+# official operation manual of the instrument:
+# (https://www.eso.org/sci/facilities/develop
+# /instruments/muse.html)
 Instruments["muse-narrow"] = {
     "spatial_sampl": "0.025",
     "spectral_sampl": "1.95",
     "spatial_res": "0.04",
-    "spectral_res": "3000",
+    "spectral_res": "2000",
     "spatial_dim": "44",
     "spectral_dim": "64",
     "target_snr": "0"
